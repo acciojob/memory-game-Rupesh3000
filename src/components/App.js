@@ -140,7 +140,7 @@ export default function App() {
             data-index={index}
             onClick={() => handleTileClick(tile.id, tile.value)}
           >
-            {tile.flipped || tile.matched ? tile.value : ""}
+            <span>{tile.flipped || tile.matched ? tile.value : ""}</span>
           </div>
         ))}
       </div>
