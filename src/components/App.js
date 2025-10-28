@@ -95,6 +95,7 @@ export default function App() {
     <div className="app">
       {/* Level selection */}
       <div className="levels_container">
+        <h4>Welcome!</h4>
         <label>
           <input type="radio" id="easy" name="level" onChange={handleLevelChange} />
           Easy
