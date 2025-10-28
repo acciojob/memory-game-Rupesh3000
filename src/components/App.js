@@ -114,8 +114,7 @@ export default function App() {
         <br />
         <button onClick={handleStart}>Start</button>
       </div>
-
-    
+      <h4>{tries}</h4>
     </>
   );
 }
