@@ -11,7 +11,7 @@ const LandingPage = ({ handleStart, setLevel }) => {
           value="easy"
           name="level"
           onChange={(e) => setLevel(e.target.id)}
-        />{" "}
+        />
         Easy
       </label>
       <br />
@@ -22,7 +22,7 @@ const LandingPage = ({ handleStart, setLevel }) => {
           value="normal"
           name="level"
           onChange={(e) => setLevel(e.target.id)}
-        />{" "}
+        />
         Normal
       </label>
       <br />
@@ -33,7 +33,7 @@ const LandingPage = ({ handleStart, setLevel }) => {
           value="hard"
           name="level"
           onChange={(e) => setLevel(e.target.id)}
-        />{" "}
+        />
         Hard
       </label>
       <br />

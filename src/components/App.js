@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import LandingPage from "./LandingPage";
-import CellsContainer from "./CellsContainer";
+import LandingPage from "./LandingPage.js";
+import CellsContainer from "./CellsContainer.js";
 
 function shuffleArray(arr) {
   const a = arr.slice();
@@ -16,15 +16,13 @@ export default function App() {
   const [tiles, setTiles] = useState([]);
   const [tries, setTries] = useState(0);
   const [flippedTiles, setFlippedTiles] = useState([]);
+  const [start, setStart] = useState(false);
 
   const pairsForLevel = (lvl) =>
     lvl === "easy" ? 4 : lvl === "normal" ? 8 : 16;
 
   const handleStart = () => {
-    if (!level) {
-      alert("select level");
-      return;
-    }
+    setStart(true);
     const pairs = pairsForLevel(level);
     const newTiles = [];
     for (let i = 1; i <= pairs; i++) newTiles.push(i, i);
@@ -79,12 +77,15 @@ export default function App() {
 
   return (
     <>
-      <LandingPage handleStart={handleStart} setLevel={setLevel} />
-      <CellsContainer
-        handleTileClick={handleTileClick}
-        tiles={tiles}
-        tries={tries}
-      />
+      {start ? (
+        <CellsContainer
+          handleTileClick={handleTileClick}
+          tiles={tiles}
+          tries={tries}
+        />
+      ) : (
+        <LandingPage handleStart={handleStart} setLevel={setLevel} />
+      )}
     </>
   );
 }
