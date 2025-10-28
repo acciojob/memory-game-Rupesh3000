@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-// shuffle helper
 function shuffleArray(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -13,134 +12,116 @@ function shuffleArray(arr) {
 export default function App() {
   const [level, setLevel] = useState("");
   const [tiles, setTiles] = useState([]);
-  const [flipped, setFlipped] = useState([]); // store indexes of flipped tiles
-  const [attempts, setAttempts] = useState(0);
-  const [matchedCount, setMatchedCount] = useState(0);
+  const [tries, setTries] = useState(0);
+  const [flippedTiles, setFlippedTiles] = useState([]);
 
   const pairsForLevel = (lvl) =>
     lvl === "easy" ? 4 : lvl === "normal" ? 8 : 16;
 
-  // change selected level
-  const handleLevelChange = (e) => setLevel(e.target.id);
-
-  // start button
   const handleStart = () => {
     if (!level) {
-      alert("Please select a level first!");
+      alert("select level");
       return;
     }
-
     const pairs = pairsForLevel(level);
-    const values = [];
-    for (let i = 1; i <= pairs; i++) values.push(i, i);
+    const newTiles = [];
+    for (let i = 1; i <= pairs; i++) newTiles.push(i, i);
 
-    const shuffled = shuffleArray(values).map((v, idx) => ({
+    const shuffled = shuffleArray(newTiles).map((v, idx) => ({
       id: `${v}-${idx}`,
       value: v,
       matched: false,
       flipped: false,
     }));
-
     setTiles(shuffled);
-    setFlipped([]);
-    setAttempts(0);
-    setMatchedCount(0);
   };
 
-  // click a tile
-  const handleTileClick = (index) => {
-    const clickedTile = tiles[index];
+  const handleTileClick = (id, value) => {
+    // 1️⃣ Ignore if tile already flipped or matched
+    const clickedTile = tiles.find((t) => t.id === id);
+    if (clickedTile.flipped || clickedTile.matched) return;
 
-    if (clickedTile.flipped || clickedTile.matched) return; // ignore if already open
-    if (flipped.length === 2) return; // ignore extra click while comparing
+    // 2️⃣ Flip the clicked tile
+    const newTiles = tiles.map((tile) =>
+      tile.id === id ? { ...tile, flipped: true } : tile
+    );
 
-    const newTiles = [...tiles];
-    newTiles[index].flipped = true;
     setTiles(newTiles);
 
-    const newFlipped = [...flipped, index];
-    setFlipped(newFlipped);
+    // 3️⃣ Add to flippedTiles
+    const newFlipped = [...flippedTiles, { id, value }];
+    setFlippedTiles(newFlipped);
 
+    // 4️⃣ If two tiles flipped, check match
     if (newFlipped.length === 2) {
-      // second tile clicked → check match
-      setAttempts((prev) => prev + 1);
+      setTries((prev) => prev + 1);
 
       const [first, second] = newFlipped;
-      const firstTile = newTiles[first];
-      const secondTile = newTiles[second];
-
-      if (firstTile.value === secondTile.value) {
-        // ✅ matched
-        newTiles[first].matched = true;
-        newTiles[second].matched = true;
-        setTiles(newTiles);
-        setMatchedCount((c) => c + 1);
-        setFlipped([]);
+      if (first.value === second.value) {
+        // ✅ Match found
+        const updatedTiles = newTiles.map((tile) =>
+          tile.value === first.value ? { ...tile, matched: true } : tile
+        );
+        setTiles(updatedTiles);
+        setFlippedTiles([]); // clear flipped
       } else {
-        // ❌ not match → flip back after short delay
-        setTimeout(() => {
-          const resetTiles = [...newTiles];
-          resetTiles[first].flipped = false;
-          resetTiles[second].flipped = false;
-          setTiles(resetTiles);
-          setFlipped([]);
-        }, 800);
+        // ❌ No match → flip back after delay
+        const resetTiles = newTiles.map((tile) =>
+          tile.matched ? tile : { ...tile, flipped: false }
+        );
+        setTiles(resetTiles);
+        setFlippedTiles([]);
       }
     }
   };
 
-  // game complete check
-  const allMatched = tiles.length > 0 && matchedCount === tiles.length / 2;
-
   return (
-    <div className="app">
-      {/* Level selection */}
+    <>
       <div className="levels_container">
-        <h4>{attempts}</h4>
-
-        <p>Welcome!</p>
+        Welcome!
         <label>
           <input
             type="radio"
             id="easy"
+            value="easy"
             name="level"
-            onChange={handleLevelChange}
-          />
+            onChange={(e) => setLevel(e.target.id)}
+          />{" "}
           Easy
         </label>
+        <br />
         <label>
           <input
             type="radio"
             id="normal"
+            value="normal"
             name="level"
-            onChange={handleLevelChange}
-          />
+            onChange={(e) => setLevel(e.target.id)}
+          />{" "}
           Normal
         </label>
+        <br />
         <label>
           <input
             type="radio"
             id="hard"
+            value="hard"
             name="level"
-            onChange={handleLevelChange}
-          />
+            onChange={(e) => setLevel(e.target.id)}
+          />{" "}
           Hard
         </label>
+        <br />
+        <button onClick={handleStart}>Start</button>
       </div>
 
-      {/* Start button */}
-      <button id="start_btn" onClick={handleStart}>
-        Start Game
-      </button>
-
-      {/* Game grid */}
       <div className="cells_container">
-        {tiles.map((tile, idx) => (
+        <h4>{tries}</h4>
+
+        {tiles.map((tile, index) => (
           <div
             key={tile.id}
             className="cell"
-            data-index={idx}
-            onClick={() => handleTileClick(idx)}
             style={{
               display: "inline-block",
               width: 60,
@@ -149,29 +130,20 @@ export default function App() {
               margin: 6,
               textAlign: "center",
               border: "1px solid #ccc",
-              borderRadius: 8,
               cursor: "pointer",
-              backgroundColor: tile.matched
-                ? "#8f8"
-                : tile.flipped
-                ? "#eef"
-                : "#ddd",
               userSelect: "none",
+              backgroundColor:
+                tile.flipped || tile.matched ? "lightgreen" : "aqua",
               fontWeight: "bold",
+              fontSize: "18px",
             }}
+            data-index={index}
+            onClick={() => handleTileClick(tile.id, tile.value)}
           >
             {tile.flipped || tile.matched ? tile.value : ""}
           </div>
         ))}
       </div>
-
-      {/* Attempts & Result */}
-      {tiles.length > 0 && (
-        <p style={{ marginTop: 16 }}>
-          Attempts: {attempts}{" "}
-          {allMatched && <span>🎉 All pairs matched!</span>}
-        </p>
-      )}
-    </div>
+    </>
   );
 }
