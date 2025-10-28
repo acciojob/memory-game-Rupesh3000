@@ -17,7 +17,8 @@ export default function App() {
   const [attempts, setAttempts] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
 
-  const pairsForLevel = (lvl) => (lvl === "easy" ? 4 : lvl === "normal" ? 8 : 16);
+  const pairsForLevel = (lvl) =>
+    lvl === "easy" ? 4 : lvl === "normal" ? 8 : 16;
 
   // change selected level
   const handleLevelChange = (e) => setLevel(e.target.id);
@@ -95,17 +96,34 @@ export default function App() {
     <div className="app">
       {/* Level selection */}
       <div className="levels_container">
-        <h4>Welcome!</h4>
+        <h4>{attempts}</h4>
+
+        <p>Welcome!</p>
         <label>
-          <input type="radio" id="easy" name="level" onChange={handleLevelChange} />
+          <input
+            type="radio"
+            id="easy"
+            name="level"
+            onChange={handleLevelChange}
+          />
           Easy
         </label>
         <label>
-          <input type="radio" id="normal" name="level" onChange={handleLevelChange} />
+          <input
+            type="radio"
+            id="normal"
+            name="level"
+            onChange={handleLevelChange}
+          />
           Normal
         </label>
         <label>
-          <input type="radio" id="hard" name="level" onChange={handleLevelChange} />
+          <input
+            type="radio"
+            id="hard"
+            name="level"
+            onChange={handleLevelChange}
+          />
           Hard
         </label>
       </div>
