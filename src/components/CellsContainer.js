@@ -5,7 +5,7 @@ const CellsContainer = ({ handleTileClick, tiles, tries }) => {
     <div className=".cells_container">
       <h4>{tries}</h4>
       {tiles.map((tile, index) => (
-        <div
+        <span
           key={tile.id}
           className="cell"
           style={{
@@ -26,8 +26,8 @@ const CellsContainer = ({ handleTileClick, tiles, tries }) => {
           data-index={index}
           onClick={() => handleTileClick(tile.id, tile.value)}
         >
-          {tile.flipped || tile.matched ? tile.value : ""}
-        </div>
+          <span>{tile.flipped || tile.matched ? tile.value : ""}</span>
+        </span>
       ))}
     </div>
   );
