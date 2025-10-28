@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import LandingPage from "./LandingPage";
+import CellsContainer from "./CellsContainer";
 
 function shuffleArray(arr) {
   const a = arr.slice();
@@ -76,70 +78,13 @@ export default function App() {
   };
 
   return (
-    <div className="levels_container">
-      Welcome!
-      <label>
-        <input
-          type="radio"
-          id="easy"
-          value="easy"
-          name="level"
-          onChange={(e) => setLevel(e.target.id)}
-        />{" "}
-        Easy
-      </label>
-      <br />
-      <label>
-        <input
-          type="radio"
-          id="normal"
-          value="normal"
-          name="level"
-          onChange={(e) => setLevel(e.target.id)}
-        />{" "}
-        Normal
-      </label>
-      <br />
-      <label>
-        <input
-          type="radio"
-          id="hard"
-          value="hard"
-          name="level"
-          onChange={(e) => setLevel(e.target.id)}
-        />{" "}
-        Hard
-      </label>
-      <br />
-      <button onClick={handleStart}>Start</button>
-      <h4>{tries}</h4>
-      <div className="cells_container">
-        {tiles.map((tile, index) => (
-          <span
-            key={tile.id}
-            className="cell"
-            style={{
-              display: "inline-block",
-              width: 60,
-              height: 60,
-              lineHeight: "60px",
-              margin: 6,
-              textAlign: "center",
-              border: "1px solid #ccc",
-              cursor: "pointer",
-              userSelect: "none",
-              backgroundColor:
-                tile.flipped || tile.matched ? "lightgreen" : "aqua",
-              fontWeight: "bold",
-              fontSize: "18px",
-            }}
-            data-index={index}
-            onClick={() => handleTileClick(tile.id, tile.value)}
-          >
-            <span>{tile.flipped || tile.matched ? tile.value : ""}</span>
-          </span>
-        ))}
-      </div>
-    </div>
+    <>
+      <LandingPage handleStart={handleStart} setLevel={setLevel} />
+      <CellsContainer
+        handleTileClick={handleTileClick}
+        tiles={tiles}
+        tries={tries}
+      />
+    </>
   );
 }
