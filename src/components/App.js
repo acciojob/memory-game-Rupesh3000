@@ -115,6 +115,32 @@ export default function App() {
         <button onClick={handleStart}>Start</button>
       </div>
       <h4>{tries}</h4>
+
+      {tiles.map((tile, index) => (
+        <span
+          key={tile.id}
+          className="cell"
+          style={{
+            display: "inline-block",
+            width: 60,
+            height: 60,
+            lineHeight: "60px",
+            margin: 6,
+            textAlign: "center",
+            border: "1px solid #ccc",
+            cursor: "pointer",
+            userSelect: "none",
+            backgroundColor:
+              tile.flipped || tile.matched ? "lightgreen" : "aqua",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+          data-index={index}
+          onClick={() => handleTileClick(tile.id, tile.value)}
+        >
+          {tile.flipped || tile.matched ? tile.value : ""}
+        </span>
+      ))}
     </>
   );
 }
